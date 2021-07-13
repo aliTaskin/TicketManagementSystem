@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TicketManagementSystem.Data;
+using TicketManagementSystem.Models.Tables;
 
 namespace TicketManagementSystem
 {
@@ -29,10 +30,9 @@ namespace TicketManagementSystem
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                options.UseSqlServer(
-                   Configuration.GetConnectionString("IdentityConnection")));
+                   Configuration.GetConnectionString("IdentityConnection")));//
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<TicketManagementUser, TicketManagementRole>().AddEntityFrameworkStores<ApplicationDbContext>(); //
             services.AddControllersWithViews();
         }
 
