@@ -18,7 +18,7 @@ namespace TicketManagementSystem.Data
         public DateTime DateModified { get; set; }
         public Priority Priority { get; set; }
         public virtual TicketManagementUser AssignedTo { get; set; }            //
-        public ActivityLog [] ActivityLog { get; set; }
+        public virtual List<ActivityLog> ActivityLog { get; set; }
         public string ConclusionText { get; set; }
 
 

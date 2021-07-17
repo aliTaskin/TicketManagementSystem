@@ -32,9 +32,11 @@ namespace TicketManagementSystem.Controllers
                     UserName = appUserViewModel.UserName,
                     Email = appUserViewModel.Email
                 };
-                IdentityResult result = await _userManager.CreateAsync(appUser, appUserViewModel.Sifre);
+                IdentityResult result = await _userManager.CreateAsync(appUser,appUserViewModel.Password);
                 if (result.Succeeded)
                     return RedirectToAction("Index");
+                else
+                    result.Errors.ToList().ForEach(e => ModelState.AddModelError(e.Code, e.Description));
             }
             return View();
         }

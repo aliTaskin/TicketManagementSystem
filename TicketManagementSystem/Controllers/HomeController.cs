@@ -5,7 +5,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using TicketManagementSystem.Data;
 using TicketManagementSystem.Models;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace TicketManagementSystem.Controllers
 {
@@ -13,14 +16,21 @@ namespace TicketManagementSystem.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        private readonly ApplicationDbContext _context;
+
+     
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;// inject dependency
         }
 
         public IActionResult Index()
         {
-            return View();
+            var users = _context.Users.ToList();
+
+            return View(users);
         }
 
         public IActionResult Privacy()
