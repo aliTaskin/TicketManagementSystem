@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using TicketManagementSystem.Data;
@@ -19,6 +20,8 @@ namespace TicketManagementSystem.Models.Tables
         [PersonalData]
         public DateTime DateOfBirth { get; set; }
 
-   
+       
+
+
     }
 }

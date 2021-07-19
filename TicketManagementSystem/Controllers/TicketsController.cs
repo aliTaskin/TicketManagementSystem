@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TicketManagementSystem.Data;
+using TicketManagementSystem.Models.Tables;
+using System.Security.Claims;
 
 namespace TicketManagementSystem.Controllers
 {
@@ -13,9 +16,12 @@ namespace TicketManagementSystem.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public TicketsController(ApplicationDbContext context)
+        private readonly UserManager<TicketManagementUser> _userManager;
+
+        public TicketsController(ApplicationDbContext context,UserManager<TicketManagementUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Tickets
@@ -45,8 +51,15 @@ namespace TicketManagementSystem.Controllers
         // GET: Tickets/Create
         public IActionResult Create()
         {
+            //var user = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            //var model = _userManager.GetUserId(HttpContext.User);
+            
+
             return View();
         }
+
+        private Task<TicketManagementUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);//get the current logged in user's Id.
 
         // POST: Tickets/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -57,8 +70,18 @@ namespace TicketManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
+                //In order to insert current user id to the created ticket,we need to turn on identity insert.Then turn it off after saving the changes to database
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[Tickets] ON");
+
+                var user = await GetCurrentUserAsync();
+                int currentUserId = user.Id;
+                ticket.CreatedById = currentUserId;
+                
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
+
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[Tickets] OFF");
+
                 return RedirectToAction(nameof(Index));
             }
             return View(ticket);

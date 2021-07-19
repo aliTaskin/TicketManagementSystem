@@ -11,7 +11,7 @@ namespace TicketManagementSystem.Controllers
 {
     public class UserController : Controller
     {
-        readonly UserManager<TicketManagementUser> _userManager;// User manager will control the 
+        readonly UserManager<TicketManagementUser> _userManager;// 
         public UserController(UserManager<TicketManagementUser> userManager)//inject dependency
         {
             _userManager = userManager;
