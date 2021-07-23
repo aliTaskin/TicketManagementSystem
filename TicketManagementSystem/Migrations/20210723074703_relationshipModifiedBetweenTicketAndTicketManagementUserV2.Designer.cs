@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketManagementSystem.Data;
 
 namespace TicketManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210723074703_relationshipModifiedBetweenTicketAndTicketManagementUserV2")]
+    partial class relationshipModifiedBetweenTicketAndTicketManagementUserV2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -182,7 +184,9 @@ namespace TicketManagementSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignedToId");
+                    b.HasIndex("AssignedToId")
+                        .IsUnique()
+                        .HasFilter("[AssignedToId] IS NOT NULL");
 
                     b.HasIndex("CreatedById");
 
@@ -359,8 +363,8 @@ namespace TicketManagementSystem.Migrations
             modelBuilder.Entity("TicketManagementSystem.Data.Ticket", b =>
                 {
                     b.HasOne("TicketManagementSystem.Models.Tables.TicketManagementUser", "AssignedTo")
-                        .WithMany("Ticket")
-                        .HasForeignKey("AssignedToId");
+                        .WithOne("Ticket")
+                        .HasForeignKey("TicketManagementSystem.Data.Ticket", "AssignedToId");
 
                     b.HasOne("TicketManagementSystem.Models.Tables.TicketManagementUser", "CreatedBy")
                         .WithMany()

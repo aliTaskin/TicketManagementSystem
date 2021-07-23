@@ -2,51 +2,84 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
+    Layout = null;
 }
 
-<h1>@ViewData["Title"]</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h4>Create a new account.</h4>
-            <hr />
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Password"></label>
-                <input asp-for="Input.Password" class="form-control" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.ConfirmPassword"></label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" />
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-             <div class="form-group">
-                    <label asp-for="Input.Name"></label>
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<meta charset="utf-8" />
+<title>Suite - Roadmap</title>
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
+<link rel="apple-touch-icon" href="~/pages/ico/60.png">
+<link rel="apple-touch-icon" sizes="76x76" href="~/pages/ico/76.png">
+<link rel="apple-touch-icon" sizes="120x120" href="~/pages/ico/120.png">
+<link rel="apple-touch-icon" sizes="152x152" href="~/pages/ico/152.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta content="" name="description" />
+<meta content="" name="author" />
+<link href="https://fonts.googleapis.com/css?family=Rubik:400,500,500i,700&display=swap&subset=latin-ext"
+      rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css">
+
+
+<link href="~/plugins/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" media="screen" />
+
+<link href="~/pages/css/pages-icons.css" rel="stylesheet" type="text/css">
+<link href="~/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link class="main-stylesheet" href="~/pages/css/pages.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="~/pages/css/custom/tm.css" />
+
+
+<div style="text-align:center !important ;">
+
+    <div class="d-flex justify-content-lg-center mr-auto p-5">
+        <div class="">
+            <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h3>Yeni hesap oluştur</h3>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Input.Email">E-posta</label>
+                    <input asp-for="Input.Email" class="form-control" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Password">Şifre</label>
+                    <input asp-for="Input.Password" class="form-control" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.ConfirmPassword">Şifreyi doğrula</label>
+                    <input asp-for="Input.ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Name">İsim</label>
                     <input asp-for="Input.Name" class="form-control" />
                     <span asp-validation-for="Input.Name" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Input.Surname"></label>
+                    <label asp-for="Input.Surname">Soyisim</label>
                     <input asp-for="Input.Surname" class="form-control" />
                     <span asp-validation-for="Input.Surname" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Input.DateOfBirth"></label>
+                    <label asp-for="Input.DateOfBirth">Doğum tarihi</label>
                     <input asp-for="Input.DateOfBirth" class="form-control" />
                     <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
                 </div>
 
-            <button type="submit" class="btn btn-primary">Register</button>
-        </form>
+                <button type="submit" class="btn btn-primary">Kayıt ol</button>
+            </form>
+        </div>
+
     </div>
-    
+
 </div>
 
 @section Scripts {

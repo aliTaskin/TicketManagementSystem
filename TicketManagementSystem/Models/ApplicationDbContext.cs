@@ -4,6 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TicketManagementSystem.Models.Tables;
+using System.Linq;
+using TicketManagementSystem.Data;
+
 
 namespace TicketManagementSystem.Data
 {
@@ -23,7 +26,17 @@ namespace TicketManagementSystem.Data
         {
             base.OnModelCreating(builder);
 
-           
+            builder.Entity<ActivityLog>()
+                 .HasOne(p => p.Ticket)
+                 .WithMany(b => b.ActivityLog)
+                 .HasForeignKey(p => p.TicketId);
+
+            builder.Entity<Ticket>()
+                .HasOne(p => p.AssignedTo)
+                .WithMany(b => b.Ticket)
+                .HasForeignKey(p => p.AssignedToId);
+
+                
           
         }
     }

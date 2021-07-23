@@ -20,6 +20,8 @@ namespace TicketManagementSystem.Models.Tables
         [PersonalData]
         public DateTime DateOfBirth { get; set; }
 
+        public List <Ticket> Ticket { get; set; }
+
        
 
 

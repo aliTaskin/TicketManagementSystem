@@ -27,7 +27,10 @@ namespace TicketManagementSystem.Controllers
         // GET: Tickets
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tickets.ToListAsync());
+            var model = await _context.Tickets.Include(c=> c.AssignedTo).ToListAsync();// include's helped to solve the null reference exception errors while displaying CreatedBy and AssignedTo in corresponding view
+            model = await _context.Tickets.Include(d => d.CreatedBy).ToListAsync();
+           
+            return View(model);
         }
 
         // GET: Tickets/Details/5
@@ -48,6 +51,60 @@ namespace TicketManagementSystem.Controllers
             return View(ticket);
         }
 
+        public async Task<IActionResult> AssignToMe(int? id)
+        {
+            
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            _context.Tickets.Include("AssignedTo");
+
+            var ticket = await _context.Tickets.FindAsync(id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+            return View(ticket);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignToMe(int id, [Bind("Id,Title,Statement,DateCreated,TicketStatus,DateModified,Priority,ConclusionText,AssignedToId,AssignedTo")] Ticket ticket)
+        {
+            if (id != ticket.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var user = await GetCurrentUserAsync();
+                    ticket.AssignedToId = user.Id;
+                    _context.Update(ticket);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TicketExists(ticket.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(ticket);
+        }
+
+
+
         // GET: Tickets/Create
         public IActionResult Create()
         {
@@ -59,7 +116,11 @@ namespace TicketManagementSystem.Controllers
             return View();
         }
 
+       
+
         private Task<TicketManagementUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);//get the current logged in user's Id.
+
+       
 
         // POST: Tickets/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -69,19 +130,81 @@ namespace TicketManagementSystem.Controllers
         public async Task<IActionResult> Create([Bind("Id,Title,Statement,DateCreated,TicketStatus,DateModified,Priority,ConclusionText")] Ticket ticket)
         {
             if (ModelState.IsValid)
-            {
-                //In order to insert current user id to the created ticket,we need to turn on identity insert.Then turn it off after saving the changes to database
-                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[Tickets] ON");
+            {               
+                var user = await GetCurrentUserAsync();               
+                ticket.CreatedBy = user;
 
-                var user = await GetCurrentUserAsync();
-                int currentUserId = user.Id;
-                ticket.CreatedById = currentUserId;
+                ActivityLog newLogForTicket = new ActivityLog();
+                newLogForTicket.Ticket = ticket;
+                newLogForTicket.Name = user.Name; // Activity log will keep the user which has modified,deleted or assigned the ticket.
+                newLogForTicket.ActionType = ActionType.Created;//this will be logged as 0 to database which is "created" ActionType
+                newLogForTicket.Date = DateTime.Now;
                 
+
+             
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
 
-                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[Tickets] OFF");
+                _context.Add(newLogForTicket);
+                await _context.SaveChangesAsync();
 
+                return RedirectToAction(nameof(Index));
+            }
+            return View(ticket);
+        }
+
+
+
+        public async Task<IActionResult> Assign(int? id)
+        {
+
+            var employees = _userManager.Users.ToList();
+
+            ViewBag.Employees = employees;
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            _context.Tickets.Include("AssignedTo");
+
+            var ticket = await _context.Tickets.FindAsync(id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+            return View(ticket);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Assign(int id, [Bind("Id,Title,Statement,DateCreated,TicketStatus,DateModified,Priority,ConclusionText,AssignedToId,AssignedTo")] Ticket ticket)
+        {
+            if (id != ticket.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    
+                    _context.Update(ticket);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TicketExists(ticket.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View(ticket);
@@ -102,6 +225,7 @@ namespace TicketManagementSystem.Controllers
             }
             return View(ticket);
         }
+
 
         // POST: Tickets/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.

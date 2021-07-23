@@ -1,0 +1,88 @@
+﻿@model IEnumerable<TicketManagementSystem.Data.Ticket>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="list">
+
+    <div class="list-head">
+        <div>Başlık</div>
+        <div>Oluşturan</div>
+        <div>Oluşturma T.</div>
+        <div>İlgilenen</div>
+        <div>Durum</div>
+        <div>&nbsp;</div>
+    </div>
+
+    @foreach (var item in Model)
+    {
+
+
+        <div class="list-item">
+            <div class="list-child">@Html.DisplayFor(modelitem => item.Title)</div>
+            <div class="list-child">@Html.DisplayFor(modelitem => item.CreatedBy.Name) @Html.DisplayFor(modelitem => item.CreatedBy.Surname)</div>
+            <div class="list-child">@Html.DisplayFor(modelitem => item.DateCreated)</div>
+            <div class="list-child">
+                @Html.DisplayFor(modelitem => item.AssignedTo.Name) @Html.DisplayFor(modelitem => item.AssignedTo.Surname)
+            </div>
+            <div class="list-child">
+                @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.In_progress)
+                {
+                    <a>Üzerinde Çalışılıyor</a>
+                }
+
+                @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Ready_To_Assign)
+                {
+                    <a>Atanmaya Hazır</a>
+                }
+
+                @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Solved)
+                {
+                    <a>Çözüldü</a>
+                }
+
+                @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Unsolved)
+                {
+                    <a>Çözülemedi</a>
+                }
+                
+            </div>
+            <div class="list-child">
+                <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#"><i class="fas fa-ellipsis-v"></i></a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href="#" class="dropdown-item" data-target="#detail" data-toggle="modal">İncele</a>
+                    <a href="#" class="dropdown-item" data-target="#assignToMe" data-toggle="modal">Üzerine Al</a>
+                    <a href="#" class="dropdown-item" data-target="#assignTo" data-toggle="modal">Birine Ata</a>
+                    <a href="#" class="dropdown-item" data-target="#solve" data-toggle="modal">Çöz</a>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
+
+@section scripts {
+
+    <!-- BEGIN VENDOR JS -->
+    <script src="~/plugins/jquery/jquery-3.2.1.min.js" type="text/javascript"></script>
+    <script src="~/plugins/modernizr.custom.js" type="text/javascript"></script>
+    <script src="~/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="~/plugins/popper/umd/popper.min.js" type="text/javascript"></script>
+    <script src="~/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="~/plugins/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <!-- END VENDOR JS -->
+    <!-- BEGIN CORE TEMPLATE JS -->
+    <!-- BEGIN CORE TEMPLATE JS -->
+    <script src="~/pages/js/pages.js"></script>
+    <!-- END CORE TEMPLATE JS -->
+    <!-- BEGIN PAGE LEVEL JS -->
+    <script src="~/js/scripts.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL JS -->
+    <!-- END CORE TEMPLATE JS -->
+    <!-- BEGIN PAGE LEVEL JS -->
+    <script src="~/js/timeline.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL JS -->
+
+}

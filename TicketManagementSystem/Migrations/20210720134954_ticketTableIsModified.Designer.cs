@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketManagementSystem.Data;
 
 namespace TicketManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210720134954_ticketTableIsModified")]
+    partial class ticketTableIsModified
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,7 +138,7 @@ namespace TicketManagementSystem.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TicketId")
+                    b.Property<int?>("TicketId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -347,19 +349,15 @@ namespace TicketManagementSystem.Migrations
 
             modelBuilder.Entity("TicketManagementSystem.Data.ActivityLog", b =>
                 {
-                    b.HasOne("TicketManagementSystem.Data.Ticket", "Ticket")
+                    b.HasOne("TicketManagementSystem.Data.Ticket", null)
                         .WithMany("ActivityLog")
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Ticket");
+                        .HasForeignKey("TicketId");
                 });
 
             modelBuilder.Entity("TicketManagementSystem.Data.Ticket", b =>
                 {
                     b.HasOne("TicketManagementSystem.Models.Tables.TicketManagementUser", "AssignedTo")
-                        .WithMany("Ticket")
+                        .WithMany()
                         .HasForeignKey("AssignedToId");
 
                     b.HasOne("TicketManagementSystem.Models.Tables.TicketManagementUser", "CreatedBy")
@@ -374,11 +372,6 @@ namespace TicketManagementSystem.Migrations
             modelBuilder.Entity("TicketManagementSystem.Data.Ticket", b =>
                 {
                     b.Navigation("ActivityLog");
-                });
-
-            modelBuilder.Entity("TicketManagementSystem.Models.Tables.TicketManagementUser", b =>
-                {
-                    b.Navigation("Ticket");
                 });
 #pragma warning restore 612, 618
         }

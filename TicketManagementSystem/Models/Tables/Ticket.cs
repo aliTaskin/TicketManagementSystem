@@ -11,6 +11,8 @@ namespace TicketManagementSystem.Data
     public class Ticket
     {
 
+        
+
         // DateCreated and DateModified column values are determined by database triggers.When a ticket record is created or update,a trigger is executed
 
         public int Id { get; set; }
@@ -21,12 +23,11 @@ namespace TicketManagementSystem.Data
         /// /////////////////////////////////////////
         /// </summary>
 
-        [ForeignKey("CreatedBy")]
-        public int ? CreatedById { get; set; }
+        
         public virtual TicketManagementUser CreatedBy { get; set; }
 
-        [ForeignKey("AssignedTo")]
         public int ? AssignedToId { get; set; }
+       
         public virtual TicketManagementUser AssignedTo { get; set; }
 
 
@@ -38,10 +39,8 @@ namespace TicketManagementSystem.Data
         public TicketStatus TicketStatus { get; set; }
         public DateTime DateModified { get; set; }
         public Priority Priority { get; set; }           
-        public virtual List<ActivityLog> ActivityLog { get; set; }
+        public List <ActivityLog>  ActivityLog { get; set; }
         public string ConclusionText { get; set; }
-
-
 
 
     }

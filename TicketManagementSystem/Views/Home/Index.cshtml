@@ -54,66 +54,7 @@
                         <div class="text-right">
                             <a href="#" class="tm-btn" data-target="#new-ticket" data-toggle="modal"><i class="fas fa-plus"></i> Yeni Ticket Oluştur</a>
                         </div>
-                        <div class="list">
-                            <div class="list-head">
-                                <div>Başlık</div>
-                                <div>Oluşturan</div>
-                                <div>Oluşturma T.</div>
-                                <div>İlgilenen</div>
-                                <div>Durum</div>
-                                <div>&nbsp;</div>
-                            </div>
-                            <div class="list-item">
-                                <div class="list-child">Raf alanlarında ki düzensizlik</div>
-                                <div class="list-child">Emrah Uslu</div>
-                                <div class="list-child">25.08.2019</div>
-                                <div class="list-child">Yasin Çilekci</div>
-                                <div class="list-child">Açık</div>
-                                <div class="list-child">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#"><i class="fas fa-ellipsis-v"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a href="#" class="dropdown-item" data-target="#detail" data-toggle="modal">İncele</a>
-                                        <a href="#" class="dropdown-item" data-target="#assignToMe" data-toggle="modal">Üzerine Al</a>
-                                        <a href="#" class="dropdown-item" data-target="#assignTo" data-toggle="modal">Birine Ata</a>
-                                        <a href="#" class="dropdown-item" data-target="#solve" data-toggle="modal">Çöz</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="list-item">
-                                <div class="list-child">Raf alanlarında ki düzensizlik</div>
-                                <div class="list-child">Emrah Uslu</div>
-                                <div class="list-child">25.08.2019</div>
-                                <div class="list-child">Yasin Çilekci</div>
-                                <div class="list-child">Açık</div>
-                                <div class="list-child">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                       href=""><i class="fas fa-ellipsis-v"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <button class="dropdown-item" type="button">İncele</button>
-                                        <button class="dropdown-item" type="button">Üzerine Al</button>
-                                        <button class="dropdown-item" type="button">Birine Ata</button>
-                                        <button class="dropdown-item" type="button">Çöz</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="list-item">
-                                <div class="list-child">Raf alanlarında ki düzensizlik</div>
-                                <div class="list-child">Emrah Uslu</div>
-                                <div class="list-child">25.08.2019</div>
-                                <div class="list-child">Yasin Çilekci</div>
-                                <div class="list-child">Açık</div>
-                                <div class="list-child">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                       href=""><i class="fas fa-ellipsis-v"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <button class="dropdown-item" type="button">İncele</button>
-                                        <button class="dropdown-item" type="button">Üzerine Al</button>
-                                        <button class="dropdown-item" type="button">Birine Ata</button>
-                                        <button class="dropdown-item" type="button">Çöz</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                     <!-- -->
                 </div>
@@ -125,20 +66,7 @@
 
         </div>
 
-        <form action="/action_page.php">
-            <label for="employee">Choose an Employee:</label>
-            <select id="employee" name="employee">
-                @foreach (var item in Model)
-                {
-                    <option value="volvo">@item.Name @item.Surname</option>
-
-                }
-               
-            </select>
-            <input type="submit">
-        </form>
-
-       
+     
         <!-- END PAGE CONTENT WRAPPER -->
     </div>
 
@@ -196,7 +124,7 @@
                         <span>Aktivite Logları</span>
                         <div class="activite-logs">
                             <ul>
-                                <li>22.08.2019 Emrah Uslu Oluşturdu.</li>
+                                <li></li>
                                 <li>25.08.2019 Yasin Çilekci üzerine aldı.</li>
                             </ul>
 
@@ -268,7 +196,7 @@
         </div>
     </div>
 
-    <div class="modal fade slide-right" id="new-ticket" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade slide-right" id="new-ticket" tabindex="-1" role="dialog" aria-hidden="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content-wrapper">
                 <div class="modal-content detail-content">

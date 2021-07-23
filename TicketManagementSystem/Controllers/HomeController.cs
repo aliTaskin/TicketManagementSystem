@@ -9,6 +9,9 @@ using TicketManagementSystem.Data;
 using TicketManagementSystem.Models;
 using System.Data.SqlClient;
 using System.Data;
+using TicketManagementSystem.Models.Tables;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace TicketManagementSystem.Controllers
 {
@@ -16,19 +19,32 @@ namespace TicketManagementSystem.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
+        private readonly UserManager<TicketManagementUser> _userManager;
+
 
         private readonly ApplicationDbContext _context;
 
      
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, UserManager<TicketManagementUser> userManager)
         {
             _logger = logger;
             _context = context;// inject dependency
+            _userManager = userManager;
         }
 
-        public IActionResult Index()
+        private Task<TicketManagementUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);//get the current logged in user's Id.
+
+        public async Task <IActionResult> Index()
         {
-            var users = _context.Users.ToList();
+
+            var user = await GetCurrentUserAsync();
+
+            if (user == null)
+            {
+               return Redirect("~/Identity/Account/Login");
+            }
+
+            var users =await _context.Users.ToListAsync();
 
             return View(users);
         }
