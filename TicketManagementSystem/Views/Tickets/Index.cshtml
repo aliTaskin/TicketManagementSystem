@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TicketManagementSystem.Data.Ticket>
+@model IEnumerable<TicketManagementSystem.Data.Ticket>
 
 
 @{
@@ -34,215 +34,244 @@
 </head>
 
 
-
+<div class="text-right">
+  <a href="#" class="tm-btn" data-target="#new-ticket" data-toggle="modal"><i class="fas fa-plus"></i> Yeni Ticket Oluştur</a>
+</div>
 
 
 <div class="list">
 
-    <div class="list-head">
-        <div>Başlık</div>
-        <div>Oluşturan</div>
-        <div>Oluşturma T.</div>
-        <div>İlgilenen</div>
-        <div>Durum</div>
-        <div>&nbsp;</div>
+  <div class="list-head">
+    <div>Başlık</div>
+    <div>Oluşturan</div>
+    <div>Oluşturma T.</div>
+    <div>İlgilenen</div>
+    <div>Durum</div>
+    <div>&nbsp;</div>
+  </div>
+
+  @{
+    int i = 0; // used for modifying user interface for each record.
+  }
+
+  @foreach (var item in Model)
+  {
+
+    string count = i.ToString();
+    string detail = "detail" + count;
+    string AssignToMe = "assignToMe" + count;
+    string assignToElse = "assignTo" + count;
+
+    @if (item.AssignedTo == null)
+    {
+      <div class="list-item">
+        <div class="list-child">@Html.DisplayFor(modelitem => item.Title)</div>
+        <div class="list-child">@Html.DisplayFor(modelitem => item.CreatedBy.Name) @Html.DisplayFor(modelitem => item.CreatedBy.Surname)</div>
+        <div class="list-child">@Html.DisplayFor(modelitem => item.DateCreated)</div>
+        <div class="list-child">
+
+          @Html.DisplayFor(modelitem => item.AssignedTo.Name) @Html.DisplayFor(modelitem => item.AssignedTo.Surname)
+        </div>
+
+        <div class="list-child">
+
+          @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.In_progress)
+          {
+            <a>Üzerinde Çalışılıyor</a>
+          }
+
+          @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Ready_To_Assign)
+          {
+            <a>Atanmaya Hazır</a>
+          }
+
+          @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Solved)
+          {
+            <a>Çözüldü</a>
+          }
+
+          @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Unsolved)
+          {
+            <a>Çözülemedi</a>
+          }
+
+        </div>
+        <div class="list-child">
+          <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#"><i class="fas fa-ellipsis-v"></i></a>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a href="#" class="dropdown-item" data-target="#@detail" runat="server" data-toggle="modal">İncele</a> <!-- detail ="detail"+"recordCount" Created in order to see details of each record -->
+            <a href="#" class="dropdown-item" data-target="#@AssignToMe" data-toggle="modal">Üzerine Al</a>
+
+            <a asp-action="Assign" asp-route-id="@item.Id" class="dropdown-item" data-target="#assignTo">Birine Ata</a>
+            <a href="#" class="dropdown-item" data-target="#solve" data-toggle="modal">Çöz</a>
+          </div>
+        </div>
+      </div>
+    }
+
+
+    <div class="modal fade slide-right" id="@detail" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content-wrapper">
+          <div class="modal-content detail-content">
+            <h6 class="primary-color">N-@item.Id Ticket</h6>
+            <div class="detail-item">
+              <span>Başlık</span>
+              <div>
+                @item.Title
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <span>Açıklama</span>
+              <div>
+                @item.Statement
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <span>Oluşturan Kişi</span>
+              <div>
+                <i class="icofont-user-alt-3"></i> @item.CreatedBy.Name @item.CreatedBy.Surname
+              </div>
+            </div>
+            <div class="detail-item">
+              <span>Oluşturulma Tarihi</span>
+              <div>
+                <i class="fas fa-calendar-alt"></i> @item.DateCreated.ToShortDateString()
+              </div>
+            </div>
+            <div class="detail-item">
+              <span>İlgilenen Kişi</span>
+              <div>
+                <i class="icofont-search-user"></i> Mevcut Değil
+              </div>
+            </div>
+            <div class="detail-item">
+              <span>Durum</span>
+              <div>
+                @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.In_progress)
+                {
+                  <a>Üzerinde Çalışılıyor</a>
+                }
+
+                @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Ready_To_Assign)
+                {
+                  <a>Atanmaya Hazır</a>
+                }
+
+                @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Solved)
+                {
+                  <a>Çözüldü</a>
+                }
+
+                @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Unsolved)
+                {
+                  <a>Çözülemedi</a>
+                }
+
+
+
+
+              </div>
+            </div>
+            <div class="detail-item">
+              <span>Son Güncelleme Tarihi</span>
+              <div>
+                <i class="fas fa-calendar-alt"></i> @item.DateModified.ToShortDateString()
+              </div>
+            </div>
+            <div class="detail-item">
+              <span>Ekler</span>
+              <div>
+                <img src="http://lorempixel.com/75/50/business/1">
+                <img src="http://lorempixel.com/75/50/business/2">
+                <img src="http://lorempixel.com/75/50/business/3">
+                <img src="http://lorempixel.com/75/50/business/4">
+              </div>
+            </div>
+            <div class="detail-item">
+              <span>Aktivite Logları</span>
+              <div class="activite-logs">
+                <ul>
+                  @foreach (var log in ViewBag.Logs)
+                  {
+                    if (log.TicketId == item.Id)
+                    {
+                      <li>
+                        @log.Date.ToShortDateString()
+                        @if (log.ActionType == TicketManagementSystem.Data.ActionType.Created)
+                        {
+                          @log.ActionTakerName <a></a> @log.ActionTakerSurname <a>Oluşturdu</a>
+                        }
+                        @if (log.ActionType == TicketManagementSystem.Data.ActionType.AssignedTo)
+                        {
+                          <a>Atadı</a>
+                        }
+                      </li>
+                    }
+                  }
+                </ul>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
-    @{
-        int i = 0; // used for modifying user interface for each record.
-    }
-
-    @foreach (var item in Model)
-    {
-
-        string count = i.ToString();
-        string detail = "detail" + count;
-        string AssignToMe = "assignToMe" + count;
-        string assignToElse = "assignTo" + count;
-
-        @if (item.AssignedTo == null)
-        {
-            <div class="list-item">
-                <div class="list-child">@Html.DisplayFor(modelitem => item.Title)</div>
-                <div class="list-child">@Html.DisplayFor(modelitem => item.CreatedBy.Name) @Html.DisplayFor(modelitem => item.CreatedBy.Surname)</div>
-                <div class="list-child">@Html.DisplayFor(modelitem => item.DateCreated)</div>
-                <div class="list-child">
-
-                    Mevcut Değil
-                </div>
-
-                <div class="list-child">
-
-                    @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.In_progress)
-                    {
-                        <a>Üzerinde Çalışılıyor</a>
-                    }
-
-                    @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Ready_To_Assign)
-                    {
-                        <a>Atanmaya Hazır</a>
-                    }
-
-                    @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Solved)
-                    {
-                        <a>Çözüldü</a>
-                    }
-
-                    @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Unsolved)
-                    {
-                        <a>Çözülemedi</a>
-                    }
-
-                </div>
-                <div class="list-child">
-                    <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#"><i class="fas fa-ellipsis-v"></i></a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a href="#" class="dropdown-item" data-target="#@detail" runat="server" data-toggle="modal">İncele</a> <!-- detail ="detail"+"recordCount" Created in order to see details of each record -->
-                        <a href="#" class="dropdown-item" data-target="#@AssignToMe" data-toggle="modal">Üzerine Al</a>
-
-                        <a asp-action="Assign" asp-route-id="@item.Id" class="dropdown-item" data-target="#assignTo">Birine Ata</a>
-                        <a href="#" class="dropdown-item" data-target="#solve" data-toggle="modal">Çöz</a>
-                    </div>
-                </div>
+    <div class="modal fade" id="@AssignToMe" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content-wrapper">
+          <div class="modal-content tm-modal">
+            <p>Bu arıza kaydı üzerine atansın mı?</p>
+            <div class="buttons">
+              <a href="">Vazgeç</a>
+              <a asp-action="AssignToMe" asp-route-id="@item.Id">Üzerine Al</a>
             </div>
-        }
-
-
-        <div class="modal fade slide-right" id="@detail" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content-wrapper">
-                    <div class="modal-content detail-content">
-                        <h6 class="primary-color">N-@item.Id Ticket</h6>
-                        <div class="detail-item">
-                            <span>Başlık</span>
-                            <div>
-                                @item.Title
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <span>Oluşturan Kişi</span>
-                            <div>
-                                <i class="icofont-user-alt-3"></i> @item.CreatedBy.Name @item.CreatedBy.Surname
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <span>Oluşturulma Tarihi</span>
-                            <div>
-                                <i class="fas fa-calendar-alt"></i> @item.DateCreated.ToShortDateString()
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <span>İlgilenen Kişi</span>
-                            <div>
-                                <i class="icofont-search-user"></i> Mevcut Değil
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <span>Durum</span>
-                            <div>
-                                @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.In_progress)
-                                {
-                                    <a>Üzerinde Çalışılıyor</a>
-                                }
-
-                                @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Ready_To_Assign)
-                                {
-                                    <a>Atanmaya Hazır</a>
-                                }
-
-                                @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Solved)
-                                {
-                                    <a>Çözüldü</a>
-                                }
-
-                                @if (item.TicketStatus == TicketManagementSystem.Data.TicketStatus.Unsolved)
-                                {
-                                    <a>Çözülemedi</a>
-                                }
-
-
-
-
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <span>Son Güncelleme Tarihi</span>
-                            <div>
-                                <i class="fas fa-calendar-alt"></i> @item.DateModified.ToShortDateString()
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <span>Ekler</span>
-                            <div>
-                                <img src="http://lorempixel.com/75/50/business/1">
-                                <img src="http://lorempixel.com/75/50/business/2">
-                                <img src="http://lorempixel.com/75/50/business/3">
-                                <img src="http://lorempixel.com/75/50/business/4">
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <span>Aktivite Logları</span>
-                            <div class="activite-logs">
-                                <ul>
-                                    <li>
-
-                                    </li>
-                                    <li>25.08.2019 Yasin Çilekci üzerine aldı.</li>
-                                </ul>
-
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-
+          </div>
         </div>
 
-        <div class="modal fade" id="@AssignToMe" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-md">
-                <div class="modal-content-wrapper">
-                    <div class="modal-content tm-modal">
-                        <p>Bu arıza kaydı üzerine atansın mı?</p>
-                        <div class="buttons">
-                            <a href="">Vazgeç</a>
-                            <a asp-action="AssignToMe" asp-route-id="@item.Id">Üzerine Al</a>
-                        </div>
-                    </div>
-                </div>
+      </div>
 
+    </div>
+
+    
+
+
+
+
+    <form asp-action="Create">
+
+      <div class="modal fade" id="assignTo" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content-wrapper">
+            <div class="modal-content tm-modal">
+              <div class="form-group">
+                <label>Atanacak Kullanıcı</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="buttons">
+                <a href="">Vazgeç</a>
+                <a href="">Üzerine Ata</a>
+              </div>
             </div>
+          </div>
 
         </div>
+      </div>
 
+    </form>
 
-        <form asp-action="Create">
+    i++;
 
-            <div class="modal fade" id="assignTo" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-md">
-                    <div class="modal-content-wrapper">
-                        <div class="modal-content tm-modal">
-                            <div class="form-group">
-                                <label>Atanacak Kullanıcı</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="buttons">
-                                <a href="">Vazgeç</a>
-                                <a href="">Üzerine Ata</a>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </form>
-
-        i++;
-
-    }
+  }
 </div>
+
+
 
 
 <p>
@@ -253,73 +282,7 @@
 
 <!-- START MODAL-CONTENT -->
 
-<div class="modal fade slide-right" id="detail" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content-wrapper">
-            <div class="modal-content detail-content">
-                <h6 class="primary-color">N-161484 Ticket</h6>
-                <div class="detail-item">
-                    <span>Başlık</span>
-                    <div>
-                        Raf alanlarında ki düzensizlik
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <span>Oluşturan Kişi</span>
-                    <div>
-                        <i class="icofont-user-alt-3"></i> Emrah Uslu
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <span>Oluşturulma Tarihi</span>
-                    <div>
-                        <i class="fas fa-calendar-alt"></i> 22.08.2019
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <span>İlgilenen Kişi</span>
-                    <div>
-                        <i class="icofont-search-user"></i> Yasin Çilekci
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <span>Durum</span>
-                    <div>
-                        Açık
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <span>Son Güncelleme Tarihi</span>
-                    <div>
-                        <i class="fas fa-calendar-alt"></i> 25.08.2019
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <span>Ekler</span>
-                    <div>
-                        <img src="http://lorempixel.com/75/50/business/1">
-                        <img src="http://lorempixel.com/75/50/business/2">
-                        <img src="http://lorempixel.com/75/50/business/3">
-                        <img src="http://lorempixel.com/75/50/business/4">
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <span>Aktivite Logları</span>
-                    <div class="activite-logs">
-                        <ul>
-                            <li>22.08.2019 Emrah Uslu Oluşturdu.</li>
-                            <li>25.08.2019 Yasin Çilekci üzerine aldı.</li>
-                        </ul>
 
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-
-</div>
 
 
 

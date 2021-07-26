@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,6 +29,9 @@ namespace TicketManagementSystem.Controllers
         {
             var model = await _context.Tickets.Include(c=> c.AssignedTo).ToListAsync();// include's helped to solve the null reference exception errors while displaying CreatedBy and AssignedTo in corresponding view
             model = await _context.Tickets.Include(d => d.CreatedBy).ToListAsync();
+
+            ViewBag.Logs = await _context.ActivityLogs.Include(c => c.Ticket).ToListAsync();
+            
            
             return View(model);
         }
@@ -86,7 +89,25 @@ namespace TicketManagementSystem.Controllers
                     ticket.AssignedToId = user.Id;
                     _context.Update(ticket);
                     await _context.SaveChangesAsync();
-                }
+
+
+          
+          ActivityLog newLogForTicket = new ActivityLog();
+          newLogForTicket.Ticket = ticket;
+          newLogForTicket.ActionTakerName = user.Name; // Activity log will keep the user which has modified,deleted or assigned the ticket.
+          newLogForTicket.ActionTakerSurname = user.Surname; // Activity log will keep the user which has modified,deleted or assigned the ticket.
+          newLogForTicket.AssignedToName = user.Name;
+          newLogForTicket.AssignedToSurname = user.Surname;
+          newLogForTicket.ActionType = ActionType.AssignedTo;//this will be logged as 1 to database which is "AssignedTo" ActionType
+          newLogForTicket.Date = DateTime.Now;
+
+          _context.Add(newLogForTicket);
+          await _context.SaveChangesAsync();
+
+
+         
+         
+        }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!TicketExists(ticket.Id))
@@ -136,7 +157,8 @@ namespace TicketManagementSystem.Controllers
 
                 ActivityLog newLogForTicket = new ActivityLog();
                 newLogForTicket.Ticket = ticket;
-                newLogForTicket.Name = user.Name; // Activity log will keep the user which has modified,deleted or assigned the ticket.
+                newLogForTicket.ActionTakerName = user.Name; // Activity log will keep the user which has modified,deleted or assigned the ticket.
+                newLogForTicket.ActionTakerSurname = user.Surname; // Activity log will keep the user which has modified,deleted or assigned the ticket.
                 newLogForTicket.ActionType = ActionType.Created;//this will be logged as 0 to database which is "created" ActionType
                 newLogForTicket.Date = DateTime.Now;
                 
@@ -190,9 +212,30 @@ namespace TicketManagementSystem.Controllers
             {
                 try
                 {
-                    
-                    _context.Update(ticket);
-                    await _context.SaveChangesAsync();
+
+          _context.Update(ticket);
+                await _context.SaveChangesAsync();
+
+          _context.Tickets.Include("AssignedTo");
+          _context.ActivityLogs.Include("AssignedTo");
+
+          var ticket2 = await _context.Tickets.Include("AssignedTo")
+                .FirstOrDefaultAsync(m => m.AssignedToId == ticket.AssignedToId);
+
+                var user = await GetCurrentUserAsync();
+                ActivityLog newLogForTicket = new ActivityLog();
+                newLogForTicket.Ticket = ticket;
+                newLogForTicket.ActionTakerName = user.Name; // Activity log will keep the user which has modified,deleted or assigned the ticket.
+                newLogForTicket.ActionTakerSurname = user.Surname; // Activity log will keep the user which has modified,deleted or assigned the ticket.
+                newLogForTicket.AssignedToName = ticket2.AssignedTo.Name;
+                newLogForTicket.AssignedToSurname = ticket2.AssignedTo.Surname;  
+                newLogForTicket.ActionType = ActionType.AssignedTo;//this will be logged as 1 to database which is "AssignedTo" ActionType
+                newLogForTicket.Date = DateTime.Now;
+
+          _context.Add(newLogForTicket);
+                await _context.SaveChangesAsync();
+
+          
                 }
                 catch (DbUpdateConcurrencyException)
                 {

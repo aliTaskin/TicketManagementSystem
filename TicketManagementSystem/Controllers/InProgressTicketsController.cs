@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,10 +39,14 @@ namespace TicketManagementSystem.Controllers
             TicketManagementUser currentUser = await GetCurrentUserAsync();
 
            
-            filteredTickets = await _context.Tickets.Include("CreatedBy").Where(x => x.AssignedTo != null &&  x.AssignedTo.Id == currentUser.Id).ToListAsync();
-            //get all ticket info if it is assigned to the current user(employee).Include helped with the null reference exceptions
+            filteredTickets = await _context.Tickets.Include("AssignedTo").Where(x => x.AssignedTo != null &&  x.AssignedTo.Id == currentUser.Id).ToListAsync();
+            filteredTickets = await _context.Tickets.Include("CreatedBy").Where(x => x.AssignedTo != null && x.AssignedTo.Id == currentUser.Id).ToListAsync();
+      //get all ticket info if it is assigned to the current user(employee).Include helped with the null reference exceptions
 
-            return View(filteredTickets);
+
+      ViewBag.Logs = await _context.ActivityLogs.Include(c => c.Ticket).ToListAsync();
+
+      return View(filteredTickets);
         }
 
         // GET: InProgressTickets/Details/5
